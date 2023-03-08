@@ -11,7 +11,7 @@ class ShowProductService {
   public async execute({ id }: IRequest): Promise<Product> {
     const productsRepository = getCustomRepository(ProductRepository);
 
-    const product = await productsRepository.findOneBy(id);
+    const product = await productsRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new AppError('Product not found.');

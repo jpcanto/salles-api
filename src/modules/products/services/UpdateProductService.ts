@@ -20,7 +20,7 @@ class UpdateProductService {
     const productsRepository = getCustomRepository(ProductRepository);
     const isProductExists = await productsRepository.findByName(name);
 
-    const product = await productsRepository.findOneBy(id);
+    const product = await productsRepository.findOne({ where: { id } });
 
     if (!product) {
       throw new AppError('Product not found.');
