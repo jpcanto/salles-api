@@ -21,8 +21,6 @@ export default class RequestValidationMiddleware {
   execute = (req: Request, res: Response, next: NextFunction) => {
     const { error } = this.schema.validate(req[this.strategy]);
 
-    console.log("==================> ERROR:")
-
     if (error) {
       return res.status(400).json({ error: error.details[0].message });
     }
