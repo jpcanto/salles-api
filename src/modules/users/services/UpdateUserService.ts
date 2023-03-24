@@ -28,7 +28,6 @@ class UpdateUserService {
     user.name = name;
     user.email = email;
     user.password = password;
-    user.avatar = "";
 
     await usersRepository.save(user);
 
