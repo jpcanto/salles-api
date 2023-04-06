@@ -1,4 +1,5 @@
 import 'reflect-metadata';
+import dotenv from 'dotenv';
 import express, { NextFunction, Request, Response } from 'express';
 import 'express-async-errors';
 import cors from 'cors';
@@ -6,7 +7,6 @@ import routes from './routes';
 import AppError from '@shared/errors/AppError';
 import { pagination } from 'typeorm-pagination';
 import '@shared/typeorm';
-import dotenv from 'dotenv';
 
 dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
 
