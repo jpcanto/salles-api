@@ -6,6 +6,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+
 @Entity('users')
 class User {
   @PrimaryGeneratedColumn('uuid')
@@ -25,6 +26,11 @@ class User {
 
   @UpdateDateColumn()
   updated_at: Date;
+
+  userOut(): any {
+    const { password, ...result } = this;
+    return result;
+  }
 }
 
 export default User;

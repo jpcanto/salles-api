@@ -38,7 +38,7 @@ class CreateSessionService {
       });
 
       return {
-        user,
+        user: user.userOut(),
         token,
       };
     } catch (error) {
