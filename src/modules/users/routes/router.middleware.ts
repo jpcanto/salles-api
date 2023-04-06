@@ -18,3 +18,11 @@ export const usersBodyMiddleware = new RequestValidationMiddleware(
   }),
   'body'
 );
+
+export const sessionsBodyMiddleware = new RequestValidationMiddleware(
+  Joi.object({
+    email: Joi.string().required(),
+    password: Joi.string().required(),
+  }),
+  'body'
+);
