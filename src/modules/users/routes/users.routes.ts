@@ -1,17 +1,18 @@
 import { Router } from 'express';
 import UsersController from '../controllers/UsersController';
+import { usersIdMiddleware, usersBodyMiddleware } from './users.middleware';
 
 const usersRouter = Router();
 const usersController = new UsersController();
 
 usersRouter.get('/', usersController.index);
 
-usersRouter.get('/:id', usersController.show);
+usersRouter.get('/:id', usersIdMiddleware.execute, usersController.show);
 
-usersRouter.post('/', usersController.create);
+usersRouter.post('/', usersBodyMiddleware.execute, usersController.create);
 
-usersRouter.put('/:id', usersController.update);
+usersRouter.put('/:id', usersIdMiddleware.execute, usersBodyMiddleware.execute, usersController.update);
 
-usersRouter.delete('/:id', usersController.delete);
+usersRouter.delete('/:id', usersIdMiddleware.execute, usersController.delete);
 
 export default usersRouter;
