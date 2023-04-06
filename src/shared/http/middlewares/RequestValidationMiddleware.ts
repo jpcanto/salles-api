@@ -26,5 +26,5 @@ export default class RequestValidationMiddleware {
     }
 
     next();
-  }
+  };
 }
