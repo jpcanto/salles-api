@@ -4,6 +4,7 @@ import 'express-async-errors';
 import cors from 'cors';
 import routes from './routes';
 import AppError from '@shared/errors/AppError';
+import { pagination } from 'typeorm-pagination';
 import '@shared/typeorm';
 import dotenv from 'dotenv';
 
@@ -13,6 +14,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(pagination);
 app.use(routes);
 app.use(
   (error: Error, request: Request, response: Response, next: NextFunction) => {
