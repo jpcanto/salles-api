@@ -1,14 +1,10 @@
 import { Router } from 'express';
 import SessionsController from '../controllers/SessionsController';
-import { sessionsBodyMiddleware } from './router.middleware';
+import { isSessionBodyValid } from '../middlewares/schema';
 
 const sessionsRouter = Router();
 const sessionsController = new SessionsController();
 
-sessionsRouter.post(
-  '/',
-  sessionsBodyMiddleware.execute,
-  sessionsController.create
-);
+sessionsRouter.post('/', isSessionBodyValid, sessionsController.create);
 
 export default sessionsRouter;
