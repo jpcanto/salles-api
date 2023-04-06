@@ -5,7 +5,7 @@ export class Encryptor {
   private readonly iv: string = '0123456789abcdef';
   private readonly key: string;
 
-  constructor(key: string = '62f2e31a707f522d9ef0578fffafe9ac') {
+  constructor(key: string = process.env.CRYPTO_HASH!) {
     this.key = key;
   }
 
