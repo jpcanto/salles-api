@@ -2,8 +2,7 @@ import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
-import * as argon2 from 'argon2';
-import { defaultHashOptions } from '@shared/utils/argon2HashOptions';
+import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 
 interface IRequest {
   name: string;
@@ -20,7 +19,8 @@ class CreateUserService {
       throw new AppError('There is already exists one user with this email');
     }
 
-    const hashedPassword = await argon2.hash('password', defaultHashOptions());
+    const argon = new Argon2Encryptor();
+    const hashedPassword = await argon.hash(password);
 
     const user = usersRepository.create({
       name,
