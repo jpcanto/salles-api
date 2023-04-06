@@ -1,7 +1,7 @@
 import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
-import { authConfig } from '@config/auth';
+import authConfig from '@config/auth';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 import { sign } from 'jsonwebtoken';
@@ -32,9 +32,9 @@ class CreateSessionService {
     }
 
     try {
-      const token = sign({}, authConfig().jwt.secret!, {
+      const token = sign({}, authConfig.jwt.secret!, {
         subject: user.id,
-        expiresIn: authConfig().jwt.expiresIn,
+        expiresIn: authConfig.jwt.expiresIn,
       });
 
       return {
