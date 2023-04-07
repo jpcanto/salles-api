@@ -1,12 +1,15 @@
 import crypto from 'crypto';
+import { IEncryptorProvider } from '../models/IEncryptorProvider';
 
-export class Encryptor {
-  private readonly algorithm: string = 'aes-256-cbc';
-  private readonly iv: string = '0123456789abcdef';
+export class Encryptor implements IEncryptorProvider {
+  private readonly algorithm: string;
+  private readonly iv: string;
   private readonly key: string;
 
-  constructor(key: string = process.env.CRYPTO_HASH!) {
-    this.key = key;
+  constructor() {
+    this.algorithm = 'aes-256-cbc';
+    this.iv = '0123456789abcdef';
+    this.key = process.env.CRYPTO_HASH!;
   }
 
   public encrypt(data: string): string {
