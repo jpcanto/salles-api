@@ -17,8 +17,7 @@ class DeleteUserService {
       throw new AppError('User not found.');
     }
 
-    const redisCache = new RedisCache();
-    await redisCache.invalidate('users');
+    await RedisCache.invalidate('users');
 
     await usersRepository.remove(user);
   }

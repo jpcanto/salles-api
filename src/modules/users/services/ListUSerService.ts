@@ -17,14 +17,13 @@ interface IPaginationUser {
 class ListUserService {
   public async getAll(): Promise<User[]> {
     const usersRepository = getCustomRepository(UsersRepository);
-    const redisCache = new RedisCache();
 
-    let users = await redisCache.recover<User[]>('users');
+    let users = await RedisCache.recover<User[]>('users');
 
     if (!users) {
       users = await usersRepository.find();
 
-      await redisCache.save('users', users);
+      await RedisCache.save('users', users);
     }
 
     return users;

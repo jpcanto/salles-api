@@ -20,8 +20,6 @@ class CreateUserService {
       throw new AppError('There is already exists one user with this email');
     }
 
-    const redisCache = new RedisCache();
-
     const argon = new Argon2Encryptor();
     const hashedPassword = await argon.hash(password);
 
@@ -31,7 +29,7 @@ class CreateUserService {
       password: hashedPassword,
     });
 
-    await redisCache.invalidate('users');
+    await RedisCache.invalidate('users');
 
     await usersRepository.save(user);
 
