@@ -7,11 +7,13 @@ import routes from './routes';
 import AppError from '@shared/errors/AppError';
 import { pagination } from 'typeorm-pagination';
 import '@shared/typeorm';
+import rateLimiter from '@shared/http/middlewares/rateLimiter';
 
 const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(rateLimiter);
 app.use(pagination);
 app.use(routes);
 app.use(
