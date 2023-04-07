@@ -1,3 +1,4 @@
+import { IUser } from '@modules/users/domain/models/IUser';
 import {
   Column,
   PrimaryGeneratedColumn,
@@ -6,9 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-
 @Entity('users')
-class User {
+class User implements IUser {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -26,11 +26,6 @@ class User {
 
   @UpdateDateColumn()
   updated_at: Date;
-
-  userOut(): any {
-    const { password, ...result } = this;
-    return result;
-  }
 }
 
 export default User;

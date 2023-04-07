@@ -1,10 +1,39 @@
-import { EntityRepository, Repository } from 'typeorm';
+import { getRepository, Repository } from 'typeorm';
 import User from '../entities/User';
+import { IUserRepository } from '@modules/users/domain/repositories/IUserRespository';
+import { IUserIn } from '@modules/users/domain/models/IUser';
 
-@EntityRepository(User)
-export class UsersRepository extends Repository<User> {
+export class UsersRepository implements IUserRepository {
+  private ormRepository: Repository<User>;
+
+  constructor() {
+    this.ormRepository = getRepository(User);
+  }
+
+  public async create({ name, email, password }: IUserIn): Promise<User> {
+    const user = this.ormRepository.create({ name, email, password });
+    await this.ormRepository.save(user);
+
+    return user;
+  }
+
+  public async save(user: User): Promise<User> {
+    await this.ormRepository.save(user);
+    return user;
+  }
+
+  public async remove(user: User): Promise<[]> {
+    await this.ormRepository.save(user);
+    return [];
+  }
+
+  public async find(): Promise<User[]> {
+    const users = await this.ormRepository.find();
+    return users;
+  }
+
   public async findByName(name: string): Promise<User | undefined> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         name,
       },
@@ -14,7 +43,7 @@ export class UsersRepository extends Repository<User> {
   }
 
   public async findById(id: string): Promise<User | undefined> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         id,
       },
@@ -24,7 +53,7 @@ export class UsersRepository extends Repository<User> {
   }
 
   public async findByEmail(email: string): Promise<User | undefined> {
-    const user = await this.findOne({
+    const user = await this.ormRepository.findOne({
       where: {
         email,
       },

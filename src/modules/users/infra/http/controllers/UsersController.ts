@@ -1,20 +1,24 @@
 import { Request, Response } from 'express';
-import CreateUserService from '../../../services/CreateUserService';
-import DeleteUserService from '../../../services/DeleteUserService';
-import ListUserService from '../../../services/ListUSerService';
-import ShowUserService from '../../../services/ShowUserService';
-import UpdateUserService from '../../../services/UpdateUserService';
+import CreateUserService from '@modules/users/services/CreateUserService';
+import DeleteUserService from '@modules/users/services/DeleteUserService';
+import ListUserService from '@modules/users/services/ListUSerService';
+import ShowUserService from '@modules/users/services/ShowUserService';
+import UpdateUserService from '@modules/users/services/UpdateUserService';
+import { container } from 'tsyringe';
 
 export default class UsersController {
   public async index(request: Request, response: Response): Promise<Response> {
-    const listUser = new ListUserService();
+    const listUser = container.resolve(ListUserService);
     const users = await listUser.getAll();
 
     return response.json(users);
   }
 
-  public async paginated_index(request: Request, response: Response): Promise<Response> {
-    const listUser = new ListUserService();
+  public async paginated_index(
+    request: Request,
+    response: Response
+  ): Promise<Response> {
+    const listUser = container.resolve(ListUserService);
     const users = await listUser.getPaginated();
 
     return response.json(users);
@@ -22,7 +26,7 @@ export default class UsersController {
 
   public async show(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
-    const showUser = new ShowUserService();
+    const showUser = container.resolve(ShowUserService);
     const user = await showUser.execute({ id });
 
     return response.json(user);
@@ -30,7 +34,7 @@ export default class UsersController {
 
   public async create(request: Request, response: Response): Promise<Response> {
     const { name, email, password } = request.body;
-    const createUser = new CreateUserService();
+    const createUser = container.resolve(CreateUserService);
 
     const user = await createUser.execute({
       name,
@@ -45,7 +49,7 @@ export default class UsersController {
     const { name, email, password } = request.body;
     const { id } = request.params;
 
-    const updateUser = new UpdateUserService();
+    const updateUser = container.resolve(UpdateUserService);
 
     const user = await updateUser.execute({
       id,
@@ -60,7 +64,7 @@ export default class UsersController {
   public async delete(request: Request, response: Response): Promise<Response> {
     const { id } = request.params;
 
-    const deleteUSer = new DeleteUserService();
+    const deleteUSer = container.resolve(DeleteUserService);
 
     await deleteUSer.execute({ id });
 

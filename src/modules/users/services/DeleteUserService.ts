@@ -1,17 +1,21 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 import RedisCache from '@shared/cache/RedisCache';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRespository';
 
 interface IRequest {
   id: string;
 }
 
+@injectable()
 class DeleteUserService {
-  public async execute({ id }: IRequest): Promise<void> {
-    const usersRepository = getCustomRepository(UsersRepository);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository
+  ) {}
 
-    const user = await usersRepository.findById(id);
+  public async execute({ id }: IRequest): Promise<void> {
+    const user = await this.usersRepository.findById(id);
 
     if (!user) {
       throw new AppError('User not found.');
@@ -19,7 +23,7 @@ class DeleteUserService {
 
     await RedisCache.invalidate('users');
 
-    await usersRepository.remove(user);
+    await this.usersRepository.remove(user);
   }
 }
 

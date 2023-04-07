@@ -1,20 +1,19 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
-import User from '../infra/typeorm/entities/User';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 import RedisCache from '@shared/cache/RedisCache';
+import { IUser, IUserIn } from '../domain/models/IUser';
+import { IUserRepository } from '../domain/repositories/IUserRespository';
+import { inject, injectable } from 'tsyringe';
 
-interface IRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
+@injectable()
 class CreateUserService {
-  public async execute({ name, email, password }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const isUserExists = await usersRepository.findByEmail(email);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository
+  ) {}
+
+  public async execute({ name, email, password }: IUserIn): Promise<IUser> {
+    const isUserExists = await this.usersRepository.findByEmail(email);
 
     if (isUserExists) {
       throw new AppError('There is already exists one user with this email');
@@ -23,7 +22,7 @@ class CreateUserService {
     const argon = new Argon2Encryptor();
     const hashedPassword = await argon.hash(password);
 
-    const user = usersRepository.create({
+    const user = await this.usersRepository.create({
       name,
       email,
       password: hashedPassword,
@@ -31,9 +30,7 @@ class CreateUserService {
 
     await RedisCache.invalidate('users');
 
-    await usersRepository.save(user);
-
-    return user.userOut();
+    return user;
   }
 }
 

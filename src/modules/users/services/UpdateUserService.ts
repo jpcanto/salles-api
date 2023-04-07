@@ -1,22 +1,22 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 import RedisCache from '@shared/cache/RedisCache';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRespository';
+import { IUpdateUserIn } from '../domain/models/IUser';
 
-interface IRequest {
-  id: string;
-  name: string;
-  email: string;
-  password: string;
-}
 
+@injectable()
 class UpdateUserService {
-  public async execute({ id, name, email, password }: IRequest): Promise<User> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const isUserExists = await usersRepository.findByEmail(email);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository
+  ) {}
 
-    const user = await usersRepository.findById(id);
+  public async execute({ id, name, email, password }: IUpdateUserIn): Promise<User> {
+    const isUserExists = await this.usersRepository.findByEmail(email);
+
+    const user = await this.usersRepository.findById(id);
 
     if (!user) {
       throw new AppError('user not found.');
@@ -31,9 +31,9 @@ class UpdateUserService {
     user.password = password;
 
     await RedisCache.invalidate('users');
-    await usersRepository.save(user);
+    await this.usersRepository.save(user);
 
-    return user.userOut();
+    return user;
   }
 }
 

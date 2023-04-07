@@ -7,6 +7,7 @@ import routes from './routes';
 import AppError from '@shared/errors/AppError';
 import { pagination } from 'typeorm-pagination';
 import '@shared/infra/typeorm';
+import '@shared/container';
 import rateLimiter from '@shared/infra/http/middlewares/rateLimiter';
 
 const app = express();

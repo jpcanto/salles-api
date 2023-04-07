@@ -1,25 +1,22 @@
 import AppError from '@shared/errors/AppError';
-import { getCustomRepository } from 'typeorm';
 import User from '../infra/typeorm/entities/User';
 import authConfig from '@config/auth';
-import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 import { sign } from 'jsonwebtoken';
+import { inject, injectable } from 'tsyringe';
+import { IUserRepository } from '../domain/repositories/IUserRespository';
+import { ISessionIn, ISessionOut } from '../domain/models/ISession';
 
-interface IRequest {
-  email: string;
-  password: string;
-}
 
-interface IResponse {
-  user: User;
-  token: string;
-}
-
+@injectable()
 class CreateSessionService {
-  public async execute({ email, password }: IRequest): Promise<IResponse> {
-    const usersRepository = getCustomRepository(UsersRepository);
-    const user = await usersRepository.findByEmail(email);
+  constructor(
+    @inject('UsersRepository')
+    private usersRepository: IUserRepository
+  ) {}
+
+  public async execute({ email, password }: ISessionIn): Promise<ISessionOut> {
+    const user = await this.usersRepository.findByEmail(email);
     if (!user) {
       throw new AppError('Incorrect email/password combination', 401);
     }
@@ -38,7 +35,7 @@ class CreateSessionService {
       });
 
       return {
-        user: user.userOut(),
+        user: user,
         token,
       };
     } catch (error) {
