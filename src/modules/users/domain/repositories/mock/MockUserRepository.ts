@@ -22,12 +22,16 @@ export class MockUsersRepository implements IUserRepository {
   }
 
   public async save(user: User): Promise<User> {
-    Object.assign(this.users, user);
+    const findIndex = this.users.findIndex(findUser => findUser.id === user.id);
+    this.users[findIndex] = user;
 
     return user;
   }
 
   public async remove(user: User): Promise<[]> {
+    const findIndex = this.users.findIndex(findUser => findUser.id === user.id);
+    this.users.splice(findIndex, 1);
+
     return [];
   }
 

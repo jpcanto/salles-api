@@ -2,10 +2,16 @@ import { MockUsersRepository } from '@modules/users/domain/repositories/mock/Moc
 import AppError from '@shared/errors/AppError';
 import CreateUserService from '../CreateUserService';
 
+let repository: MockUsersRepository;
+let createUser: CreateUserService;
+
 describe('CreateUser', () => {
+  beforeEach(() => {
+    repository = new MockUsersRepository();
+    createUser = new CreateUserService(repository);
+  });
+
   it('Should be able to create new user', async () => {
-    const repository = new MockUsersRepository();
-    const createUser = new CreateUserService(repository);
     const user = await createUser.execute({
       name: 'Developer test',
       email: 'Developer@developer.com',
@@ -16,8 +22,6 @@ describe('CreateUser', () => {
   });
 
   it('Should not be able to create two users with the same email', async () => {
-    const repository = new MockUsersRepository();
-    const createUser = new CreateUserService(repository);
     await createUser.execute({
       name: 'Developer test',
       email: 'Developer@developer.com',
