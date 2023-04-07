@@ -6,9 +6,9 @@ import { isUserIdValid, isUSerBodyValid } from '../middlewares/schema';
 const usersRouter = Router();
 const usersController = new UsersController();
 
-usersRouter.get('/', usersController.index);
+usersRouter.get('/', isAuthenticated, usersController.index);
 
-usersRouter.get('/:id', isAuthenticated, isUSerBodyValid, usersController.show);
+usersRouter.get('/:id', isAuthenticated, usersController.show);
 
 usersRouter.post('/', isUSerBodyValid, usersController.create);
 
