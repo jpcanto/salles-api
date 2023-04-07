@@ -17,7 +17,7 @@ class ShowUserService {
       throw new AppError('User not found.');
     }
 
-    return user;
+    return user.userOut();
   }
 }
 

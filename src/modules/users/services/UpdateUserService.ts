@@ -31,7 +31,7 @@ class UpdateUserService {
 
     await usersRepository.save(user);
 
-    return user;
+    return user.userOut();
   }
 }
 

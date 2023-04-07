@@ -17,9 +17,14 @@ class ListUserService {
   public async execute(): Promise<IPaginationUser> {
     const usersRepository = getCustomRepository(UsersRepository);
 
-    const users = await usersRepository.createQueryBuilder().paginate();
+    const paginationResult = await usersRepository
+      .createQueryBuilder()
+      .paginate();
+    const users = paginationResult.data.map((user: User) => user.userOut());
+    
+    paginationResult.data = users;
 
-    return users as IPaginationUser;
+    return paginationResult as IPaginationUser;
   }
 }
 
