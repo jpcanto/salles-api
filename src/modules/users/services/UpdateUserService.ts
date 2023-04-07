@@ -2,6 +2,7 @@ import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import RedisCache from '@shared/cache/RedisCache';
 
 interface IRequest {
   id: string;
@@ -25,10 +26,13 @@ class UpdateUserService {
       throw new AppError('There is already exists one user with this email');
     }
 
+    const redisCache = new RedisCache();
+
     user.name = name;
     user.email = email;
     user.password = password;
 
+    await redisCache.invalidate('users');
     await usersRepository.save(user);
 
     return user.userOut();

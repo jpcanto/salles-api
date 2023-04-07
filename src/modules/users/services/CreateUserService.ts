@@ -3,6 +3,7 @@ import { getCustomRepository } from 'typeorm';
 import User from '../typeorm/entities/User';
 import { UsersRepository } from '../typeorm/repositories/UsersRepository';
 import Argon2Encryptor from '@shared/utils/argon2Encryptor';
+import RedisCache from '@shared/cache/RedisCache';
 
 interface IRequest {
   name: string;
@@ -19,6 +20,8 @@ class CreateUserService {
       throw new AppError('There is already exists one user with this email');
     }
 
+    const redisCache = new RedisCache();
+
     const argon = new Argon2Encryptor();
     const hashedPassword = await argon.hash(password);
 
@@ -27,6 +30,8 @@ class CreateUserService {
       email,
       password: hashedPassword,
     });
+
+    await redisCache.invalidate('users');
 
     await usersRepository.save(user);
 
