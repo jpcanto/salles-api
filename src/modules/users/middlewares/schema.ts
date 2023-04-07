@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import RequestValidationMiddleware from '@shared/http/middlewares/RequestValidationMiddleware';
+import RequestValidationMiddleware from '@shared/infra/http/middlewares/RequestValidationMiddleware';
 
 export const isUserIdValid = new RequestValidationMiddleware(
   Joi.object({

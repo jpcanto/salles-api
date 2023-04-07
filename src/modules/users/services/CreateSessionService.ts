@@ -1,8 +1,8 @@
 import AppError from '@shared/errors/AppError';
 import { getCustomRepository } from 'typeorm';
-import User from '../typeorm/entities/User';
+import User from '../infra/typeorm/entities/User';
 import authConfig from '@config/auth';
-import { UsersRepository } from '../typeorm/repositories/UsersRepository';
+import { UsersRepository } from '../infra/typeorm/repositories/UsersRepository';
 import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 import { sign } from 'jsonwebtoken';
 
