@@ -1,14 +1,21 @@
 import { Request, Response } from 'express';
 import CreateUserService from '../services/CreateUserService';
 import DeleteUserService from '../services/DeleteUserService';
-import ListUserService from '../services/ListUserService';
+import ListUserService from '../services/ListUSerService';
 import ShowUserService from '../services/ShowUserService';
 import UpdateUserService from '../services/UpdateUserService';
 
 export default class UsersController {
   public async index(request: Request, response: Response): Promise<Response> {
     const listUser = new ListUserService();
-    const users = await listUser.execute();
+    const users = await listUser.getAll();
+
+    return response.json(users);
+  }
+
+  public async paginated_index(request: Request, response: Response): Promise<Response> {
+    const listUser = new ListUserService();
+    const users = await listUser.getPaginated();
 
     return response.json(users);
   }

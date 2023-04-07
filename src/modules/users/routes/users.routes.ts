@@ -8,6 +8,8 @@ const usersController = new UsersController();
 
 usersRouter.get('/', isAuthenticated, usersController.index);
 
+usersRouter.get('/page', isAuthenticated, usersController.paginated_index);
+
 usersRouter.get('/:id', isAuthenticated, usersController.show);
 
 usersRouter.post('/', isUSerBodyValid, usersController.create);
