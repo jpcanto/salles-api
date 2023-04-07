@@ -1,3 +1,4 @@
+import { SelectQueryBuilder } from 'typeorm';
 import { IUser, IUserIn } from '../models/IUser';
 
 export interface IUserRepository {
@@ -8,4 +9,5 @@ export interface IUserRepository {
   save(user: IUser): Promise<IUser>;
   remove(user: IUser): Promise<[]>;
   find(): Promise<IUser[]>;
+  createQueryBuilder(): SelectQueryBuilder<IUser>;
 }

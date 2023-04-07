@@ -1,4 +1,4 @@
-import { getRepository, Repository } from 'typeorm';
+import { getRepository, Repository, SelectQueryBuilder } from 'typeorm';
 import User from '../entities/User';
 import { IUserRepository } from '@modules/users/domain/repositories/IUserRespository';
 import { IUserIn } from '@modules/users/domain/models/IUser';
@@ -60,5 +60,9 @@ export class UsersRepository implements IUserRepository {
     });
 
     return user;
+  }
+
+  public createQueryBuilder(): SelectQueryBuilder<User> {
+    return this.ormRepository.createQueryBuilder();
   }
 }
