@@ -1,14 +1,17 @@
 import { MockUsersRepository } from '@modules/users/domain/repositories/mock/MockUserRepository';
+import MockArgon2HashProvider from '@modules/users/providers/hashProvider/mocks/MockArgon2HashProvider';
 import AppError from '@shared/errors/AppError';
 import CreateUserService from '../CreateUserService';
 
 let repository: MockUsersRepository;
 let createUser: CreateUserService;
+let argon2HashProvider: MockArgon2HashProvider;
 
 describe('CreateUser', () => {
   beforeEach(() => {
     repository = new MockUsersRepository();
-    createUser = new CreateUserService(repository);
+    argon2HashProvider = new MockArgon2HashProvider();
+    createUser = new CreateUserService(repository, argon2HashProvider);
   });
 
   it('Should be able to create new user', async () => {

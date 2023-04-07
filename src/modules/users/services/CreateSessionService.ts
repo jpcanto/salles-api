@@ -1,18 +1,18 @@
 import AppError from '@shared/errors/AppError';
-import User from '../infra/typeorm/entities/User';
 import authConfig from '@config/auth';
-import Argon2Encryptor from '@shared/utils/argon2Encryptor';
 import { sign } from 'jsonwebtoken';
 import { inject, injectable } from 'tsyringe';
 import { IUserRepository } from '../domain/repositories/IUserRespository';
 import { ISessionIn, ISessionOut } from '../domain/models/ISession';
-
+import { IArgon2HashProvider } from '../providers/hashProvider/models/IArgon2HashProvider';
 
 @injectable()
 class CreateSessionService {
   constructor(
     @inject('UsersRepository')
-    private usersRepository: IUserRepository
+    private usersRepository: IUserRepository,
+    @inject('Argon2HashProvider')
+    private argon2HashProvider: IArgon2HashProvider
   ) {}
 
   public async execute({ email, password }: ISessionIn): Promise<ISessionOut> {
@@ -21,8 +21,10 @@ class CreateSessionService {
       throw new AppError('Incorrect email/password combination', 401);
     }
 
-    const argon2 = new Argon2Encryptor();
-    const passwordConfirmed = await argon2.verify(password, user.password);
+    const passwordConfirmed = await this.argon2HashProvider.verifyHash(
+      password,
+      user.password
+    );
 
     if (!passwordConfirmed) {
       throw new AppError('Incorrect email/password combination', 401);
